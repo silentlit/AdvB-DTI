@@ -33,7 +33,6 @@ def spearman(x, y):
     return 1 - 6 * f1 / (len(x) * (np.square(len(x)) - 1))
 
 
-# 划分出正样本
 def positive_dt():
     dt_matrix = np.load(data_path + "new_label.npy")
     dt_matrix = dt_matrix.T
@@ -49,14 +48,13 @@ def positive_dt():
                 positive_dt_tuple.append((d, t))
                 positive_target.append(t)
                 drug_target_matrix[d][t] = 1
-        d_positive_target.append(positive_target) # 记录每个d下相互作用的矩阵中t index
+        d_positive_target.append(positive_target) 
     np.save("d_tp", positive_dt_tuple)
     np.save("d_t_pn_matrix", drug_target_matrix)
     np.save("d_p_t", d_positive_target)
     print("positive sample done...")
 
 
-# 正样本按靶标数量1：1采样负样本
 def negtive_dt():
     target_p = np.load(data_path + "tp_data.npy")
     target_n = np.load(data_path + "rngene_data.npy")
@@ -72,32 +70,12 @@ def negtive_dt():
         tn_list.append(t_n)
         d_tn.append(i + positive_t_index)
         target_feature[i + positive_t_index] = target_n[t_n]
-    np.save("tn", tn_list) # 对应实际neg的index
-    np.save("d_tn", d_tn) # 对应矩阵中neg的index
-    np.save("target_feature", target_feature) # 保存target特征
+    np.save("tn", tn_list) 
+    np.save("d_tn", d_tn) 
+    np.save("target_feature", target_feature) 
     print("negative sample done...")
 
 
-# 生成target_list[(tp_1, 1)... (tn_1, 0)... (tn_n, 0)]. 生成d_t_matrix
-# def gen_target_list():
-#     drug = np.load(data_path + "drug_data.npy")
-#     target_p = np.load(data_path + "tp_data.npy")
-#     target_n = np.load(data_path + "rngene_data.npy")
-#     drug_target_matrix = np.zeros(shape=(len(drug), len(target_p) + len(target_n)))
-#
-#
-#     target_list = []
-#     tp = np.load("./d_tp.npy")
-#     for dtp in tp:
-#         d, t = dtp
-#         target_list.append((t, 1))
-#     tn = np.load("./tn.npy")
-#     for t in tn:
-#         target_list.append((t, 0))
-#     np.save("target_list", target_list)
-
-
-# 计算相似性
 def similarity_matrix(check=False):
     if check:
         if os.path.exists("./d_similarity_matrix.npy"):
